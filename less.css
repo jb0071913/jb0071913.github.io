@@ -16,6 +16,9 @@ body {
   cursor: pointer;
   color: red;
 }
+.rule-container md-autocomplete-wrap {
+  box-shadow: none;
+}
 
 .rule-set-container {
   padding: 10px;
