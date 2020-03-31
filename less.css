@@ -1,0 +1,44 @@
+
+body {
+  font-size: 14px;
+}
+
+.query-builder .model-title md-icon {
+  cursor: pointer;
+  margin-left: 0;
+  margin-right: 0;
+}
+.query-builder .model-container {
+  background-color: #eeeeee;
+}
+
+.rule-container md-icon.remove-rule {
+  cursor: pointer;
+  color: red;
+}
+
+.rule-set-container {
+  padding: 10px;
+}
+.rule-set-container md-icon.add-rule,
+.rule-set-container md-icon.add-rule-set {
+  color: blue;
+  cursor: pointer;
+}
+.rule-set-container md-icon.remove-rule-set {
+  cursor: pointer;
+  color: red;
+}
+.rule-set-container .rule-outline {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border: thin solid lightgray;
+}
+
+.demo-dialog {
+  width: 100%;
+}
+.demo-dialog md-dialog-content {
+  min-height: 475px;
+}
+
