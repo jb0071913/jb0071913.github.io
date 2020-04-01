@@ -3,6 +3,12 @@ body {
   font-size: 14px;
 }
 
+.collapsible-panel-container md-icon {
+  cursor: pointer;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .query-builder .model-title md-icon {
   cursor: pointer;
   margin-left: 0;
