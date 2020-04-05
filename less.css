@@ -3,8 +3,11 @@ body {
   font-size: 14px;
 }
 
-.collapsible-panel-container md-icon {
+.collapsible-panel-container > div {
   cursor: pointer;
+  outline: none;
+}
+.collapsible-panel-container md-icon {
   margin-left: 0;
   margin-right: 0;
 }
@@ -37,6 +40,12 @@ body {
 .rule-set-container md-icon.remove-rule-set {
   cursor: pointer;
   color: red;
+}
+.rule-set-container md-icon {
+  outline: none;
+}
+.rule-set-container md-icon[disabled] {
+  color: lightgray;
 }
 .rule-set-container .rule-outline {
   margin-top: 5px;
