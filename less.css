@@ -2,6 +2,17 @@
 body {
   font-size: 14px;
 }
+body .md-button.md-small {
+  color: blue;
+  max-width: 65px;
+  min-width: 65px;
+  height: 25px;
+  line-height: 25px;
+  min-height: 25px;
+  font-size: 10px;
+  padding: 0 0;
+  margin: 0;
+}
 
 .collapsible-panel-container > div {
   cursor: pointer;
@@ -25,12 +36,25 @@ body {
   cursor: pointer;
   color: red;
 }
+.rule-container .md-button.remove-rule {
+  color: red;
+  max-width: 30px;
+  min-width: 30px;
+}
 .rule-container md-autocomplete-wrap {
   box-shadow: none;
 }
 
 .rule-set-container {
   padding: 10px;
+}
+.rule-set-container md-icon {
+  outline: none;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.rule-set-container md-icon[disabled] {
+  color: lightgray;
 }
 .rule-set-container md-icon.add-rule,
 .rule-set-container md-icon.add-rule-set {
@@ -41,11 +65,19 @@ body {
   cursor: pointer;
   color: red;
 }
-.rule-set-container md-icon {
-  outline: none;
-}
 .rule-set-container md-icon[disabled] {
   color: lightgray;
+}
+.rule-set-container .md-button.add-rule,
+.rule-set-container .md-button.add-rule-set,
+.rule-set-container .md-button.remove-rule-set {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.rule-set-container .md-button.remove-rule-set {
+  color: red;
+  max-width: 30px;
+  min-width: 30px;
 }
 .rule-set-container .child-rule-container {
   margin-left: 2%;
