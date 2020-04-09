@@ -47,10 +47,35 @@ body {
 .rule-set-container md-icon[disabled] {
   color: lightgray;
 }
-.rule-set-container .rule-outline {
+.rule-set-container .child-rule-container {
+  margin-left: 2%;
   margin-top: 5px;
   margin-bottom: 5px;
-  border: thin solid lightgray;
+  border: 2px solid lightgray;
+}
+.rule-set-container .rule-connector {
+  position: relative;
+}
+.rule-set-container .rule-connector::before {
+  top: -5px;
+  border-width: 0 0 2px 2px;
+}
+.rule-set-container .rule-connector::after {
+  border-width: 0 0 0 2px;
+  top: 50%;
+}
+.rule-set-container .rule-connector::before,
+.rule-set-container .rule-connector::after {
+  content: '';
+  left: -12px;
+  border-color: #CCC;
+  border-style: solid;
+  width: 9px;
+  height: calc(50% + 6px);
+  position: absolute;
+}
+.rule-set-container .rule-connector:last-child::after {
+  content: none;
 }
 
 .demo-dialog {
