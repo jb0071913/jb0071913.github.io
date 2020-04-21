@@ -32,6 +32,12 @@ body .md-button.md-small {
   background-color: #eeeeee;
 }
 
+.rule-container md-input-container {
+  margin: 10px 0;
+}
+.rule-container md-autocomplete[disabled] {
+  background: inherit;
+}
 .rule-container md-icon.remove-rule {
   cursor: pointer;
   color: red;
@@ -83,6 +89,8 @@ body .md-button.md-small {
   margin-left: 2%;
   margin-top: 5px;
   margin-bottom: 5px;
+}
+.rule-set-container .child-rule-container.container-outline {
   border: 2px solid lightgray;
 }
 .rule-set-container .rule-connector {
