@@ -31,6 +31,12 @@ body .md-button.md-small {
 .query-builder .model-container {
   background-color: #eeeeee;
 }
+.query-builder md-icon.valid {
+  color: green;
+}
+.query-builder md-icon.invalid {
+  color: red;
+}
 
 .rule-container md-input-container {
   margin: 10px 0;
