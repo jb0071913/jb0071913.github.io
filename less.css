@@ -41,6 +41,9 @@ body .md-button.md-small {
 .rule-container md-input-container {
   margin: 10px 0;
 }
+.rule-container md-input-container.class-type {
+  margin-top: 20px;
+}
 .rule-container md-autocomplete[disabled] {
   background: inherit;
 }
@@ -55,6 +58,9 @@ body .md-button.md-small {
 }
 .rule-container md-autocomplete-wrap {
   box-shadow: none;
+}
+.rule-container .md-errors-spacer {
+  min-height: 0px;
 }
 
 .rule-set-container {
@@ -79,6 +85,12 @@ body .md-button.md-small {
 }
 .rule-set-container md-icon[disabled] {
   color: lightgray;
+}
+.rule-set-container div.read-only-message {
+  background-color: lightgrey;
+  border-radius: 25px;
+  padding: 3px;
+  text-align: center;
 }
 .rule-set-container .md-button.add-rule,
 .rule-set-container .md-button.add-rule-set,
@@ -128,6 +140,9 @@ body .md-button.md-small {
   width: 100%;
 }
 .demo-dialog md-dialog-content {
-  min-height: 300px;
+  min-height: 500px;
+  min-width: 400px;
 }
 
+
+/*# sourceMappingURL=less.css.map*/
