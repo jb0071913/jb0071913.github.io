@@ -4,8 +4,8 @@ body {
 }
 body .md-button.md-small {
   color: blue;
-  max-width: 65px;
-  min-width: 65px;
+  max-width: 70px;
+  min-width: 70px;
   height: 25px;
   line-height: 25px;
   min-height: 25px;
@@ -53,8 +53,10 @@ body .md-button.md-small {
 }
 .rule-container .md-button.remove-rule {
   color: red;
-  max-width: 30px;
-  min-width: 30px;
+  max-width: 35px;
+  min-width: 35px;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 .rule-container md-autocomplete-wrap {
   box-shadow: none;
@@ -100,8 +102,8 @@ body .md-button.md-small {
 }
 .rule-set-container .md-button.remove-rule-set {
   color: red;
-  max-width: 30px;
-  min-width: 30px;
+  max-width: 35px;
+  min-width: 35px;
 }
 .rule-set-container .child-rule-container {
   margin-left: 2%;
