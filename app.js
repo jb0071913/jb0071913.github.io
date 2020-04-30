@@ -303,7 +303,7 @@ function queryBuilderController() {
 /***/ (function(module, exports) {
 
 // Module
-var code = "<div class=\"rule-set-container\">\n    <div class=\"rule-set\" layout=\"row\">\n        <div flex=\"50\" layout=\"row\" layout-align=\"start center\">\n            <and-or-switch ng-if=\"$ctrl.mode === 'build' || ($ctrl.mode === 'entry' && $ctrl.data.condition !== 'criteria')\"\n                           data=\"$ctrl.data\"\n                           display-options=\"$ctrl.displayOptions.logicalTerms\"\n                           disable-and=\"$ctrl.disableAnd\"\n                           disable-or=\"$ctrl.disableOr\">\n            </and-or-switch>\n            <div ng-if=\"$ctrl.mode === 'entry' && !$ctrl.isFirst && $ctrl.selectedFilter\" layout=\"row\" flex=\"100\">\n                <div flex=\"60\">{{$ctrl.data.name}}</div>\n                <div flex=\"5\"></div>\n                <div ng-if=\"!$ctrl.data.rules.length\" flex=\"35\" class=\"read-only-message\">\n                    {{$ctrl.displayOptions.entityTerms.rule || 'Rule Set'}} requires no user inputs\n                </div>\n            </div>\n            <div ng-if=\"$ctrl.isFirst && !$ctrl.data.rules.length\">\n                Please use the buttons on the right to add a {{$ctrl.displayOptions.entityTerms.rule|| 'Rule'}}/{{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}\n            </div>\n            <div ng-if=\"!$ctrl.isFirst && $ctrl.data.condition !== 'criteria' && $ctrl.data.rules.length < 2\">\n                A {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}} must have 2 or more children\n            </div>\n            <div flex=\"100\" ng-if=\"$ctrl.mode === 'entry' && $ctrl.data.type === 'ruleSet' && $ctrl.data.condition === 'criteria' && !$ctrl.isFirst && !$ctrl.selectedFilter\">\n                <md-select required ng-model=\"$ctrl.selectedFilter\" placeholder=\"Choose a filter\" aria-label=\"Choose a filter\" ng-change=\"$ctrl.selectedFilterChanged()\">\n                    <md-option ng-value=\"filter\" ng-repeat=\"filter in $ctrl.preDefinedRules\">{{filter.name}}</md-option>\n                </md-select>\n            </div>\n        </div>\n        <div flex=\"50\" layout=\"row\" layout-align=\"end center\">\n            <div>\n                <md-icon class=\"add-rule\"\n                         ng-click=\"$ctrl.checkCondition($ctrl.data.condition, 'rule', 'enable') && $ctrl.addRule()\" \n                         ng-disabled=\"!$ctrl.checkCondition($ctrl.data.condition, 'rule', 'enable')\"\n                         ng-if=\"!$ctrl.displayOptions.useTextButtons && $ctrl.checkCondition($ctrl.data.condition, 'rule', 'render')\">\n                    add\n                    <md-tooltip>Add {{$ctrl.displayOptions.entityTerms.rule || 'Rule'}}</md-tooltip>\n                </md-icon>\n            </div>\n            <div>\n                <md-button class=\"md-small md-raised add-rule\"\n                           ng-click=\"$ctrl.checkCondition($ctrl.data.condition, 'rule', 'enable') && $ctrl.addRule()\" \n                           ng-disabled=\"!$ctrl.checkCondition($ctrl.data.condition, 'rule', 'enable')\"\n                           ng-if=\"$ctrl.displayOptions.useTextButtons && $ctrl.checkCondition($ctrl.data.condition, 'rule', 'render')\">\n                    + {{$ctrl.displayOptions.entityTerms.rule|| 'Rule'}}\n                    <md-tooltip>Add {{$ctrl.displayOptions.entityTerms.rule || 'Rule'}}</md-tooltip>\n                </md-button>\n            </div>\n            <div>\n                <md-icon class=\"add-rule-set\" \n                         ng-click=\"$ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'enable') && $ctrl.addRuleSet()\"\n                         ng-disabled=\"!$ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'enable')\" \n                         ng-if=\"!$ctrl.displayOptions.useTextButtons && $ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'render')\">\n                    add_circle_outline\n                    <md-tooltip>Add {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}</md-tooltip>\n                </md-icon>\n            </div>\n            <div>\n                <md-button class=\"md-small md-raised add-rule-set\" \n                         ng-click=\"$ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'enable') && $ctrl.addRuleSet()\"\n                         ng-disabled=\"!$ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'enable')\" \n                         ng-if=\"$ctrl.displayOptions.useTextButtons && $ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'render')\">\n                    + {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}\n                    <md-tooltip>Add {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}</md-tooltip>\n                </md-button>\n            </div>\n            <div>\n                <md-icon class=\"remove-rule-set\" \n                         ng-if=\"!$ctrl.isFirst && !$ctrl.displayOptions.useTextButtons\" \n                         ng-click=\"$ctrl.removeRuleSet()\">\n                    remove_circle_outline\n                    <md-tooltip>Remove {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}</md-tooltip>\n                </md-icon>\n            </div>\n            <div>\n                <md-button class=\"md-small md-raised remove-rule-set\"\n                         ng-if=\"!$ctrl.isFirst && $ctrl.displayOptions.useTextButtons\" \n                         ng-click=\"$ctrl.removeRuleSet()\">\n                    X\n                    <md-tooltip>Remove {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}</md-tooltip>\n                </md-button>\n            </div>\n        </div>\n    </div>\n    <div class=\"child-rule-container\"\n         ng-class=\"{\n             'rule-connector': $ctrl.data.rules.length > 1 && $ctrl.data.condition !== 'criteria',\n             'container-outline': $ctrl.data.condition !== 'criteria'\n        }\"\n         ng-repeat=\"rule in $ctrl.data.rules\">\n        <div ng-switch=\"rule.type\">\n            <rule ng-switch-when=\"rule\"\n                  allow-empty=\"$ctrl.allowEmptyRules\"\n                  data=\"rule\"\n                  fields=\"$ctrl.fields\"\n                  mode=\"{{$ctrl.mode}}\"\n                  on-remove=\"$ctrl.removeRule(rule)\"\n                  operators=\"$ctrl.operators\"\n                  options=\"$ctrl.displayOptions\"\n                  user-input-names=\"$ctrl.userInputNames\">\n            </rule>\n            <rule-set ng-switch-when=\"ruleSet\"\n                      allow-empty-rules=\"$ctrl.allowEmptyRules\"\n                      condition-options=\"$ctrl.conditionOptions\"\n                      default-child-rule=\"$ctrl.defaultChildRule\"\n                      default-child-rule-set=\"$ctrl.defaultChildRuleSet\"\n                      data=\"rule\"\n                      display-options=\"$ctrl.displayOptions\"\n                      is-first=\"false\"\n                      fields=\"$ctrl.fields\"\n                      initial-condition=\"{{$ctrl.initialCondition}}\"\n                      mix-rules=\"$ctrl.mixRules\"\n                      mode=\"{{$ctrl.mode}}\"\n                      on-remove-rule-set=\"$ctrl.removeRule(rule)\"\n                      operators=\"$ctrl.operators\"\n                      pre-defined-rules=\"$ctrl.preDefinedRules\"\n                      user-input-names=\"$ctrl.userInputNames\"\n                      ng-model=\"rule\"\n                      ng-attr-rule-size=\"{{rule.condition !== 'criteria' ? true : undefined}}\">\n            </rule-set>\n        </div>\n    </div>\n</div>";
+var code = "<div class=\"rule-set-container\">\n    <div class=\"rule-set\" layout=\"row\">\n        <div flex=\"50\" layout=\"row\" layout-align=\"start center\">\n            <and-or-switch ng-if=\"$ctrl.mode === 'build' || ($ctrl.mode === 'entry' && $ctrl.data.condition !== 'criteria')\"\n                           data=\"$ctrl.data\"\n                           display-options=\"$ctrl.displayOptions.logicalTerms\"\n                           disable-and=\"$ctrl.disableAnd\"\n                           disable-or=\"$ctrl.disableOr\">\n            </and-or-switch>\n            <div ng-if=\"$ctrl.mode === 'entry' && !$ctrl.isFirst && $ctrl.selectedFilter\" layout=\"row\" flex=\"100\">\n                <div flex=\"60\">{{$ctrl.data.name}}</div>\n                <div flex=\"5\"></div>\n                <div ng-if=\"!$ctrl.data.rules.length\" flex=\"35\" class=\"read-only-message\">\n                    {{$ctrl.displayOptions.entityTerms.rule || 'Rule Set'}} requires no user inputs\n                </div>\n            </div>\n            <div ng-if=\"$ctrl.isFirst && !$ctrl.data.rules.length\">\n                Please use the buttons on the right to add a {{$ctrl.displayOptions.entityTerms.rule|| 'Rule'}}/{{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}\n            </div>\n            <div ng-if=\"!$ctrl.isFirst && $ctrl.data.condition !== 'criteria' && $ctrl.data.rules.length < 2\">\n                A {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}} must have 2 or more children\n            </div>\n            <div flex=\"100\" ng-if=\"$ctrl.mode === 'entry' && $ctrl.data.type === 'ruleSet' && $ctrl.data.condition === 'criteria' && !$ctrl.isFirst && !$ctrl.selectedFilter\">\n                <md-select required ng-model=\"$ctrl.selectedFilter\" placeholder=\"Choose a filter\" aria-label=\"Choose a filter\" ng-change=\"$ctrl.selectedFilterChanged()\">\n                    <md-option ng-value=\"filter\" ng-repeat=\"filter in $ctrl.preDefinedRules\">{{filter.name}}</md-option>\n                </md-select>\n            </div>\n        </div>\n        <div flex=\"50\" layout=\"row\" layout-align=\"end center\">\n            <div>\n                <md-icon class=\"add-rule\"\n                         ng-click=\"$ctrl.checkCondition($ctrl.data.condition, 'rule', 'enable') && $ctrl.addRule()\" \n                         ng-disabled=\"!$ctrl.checkCondition($ctrl.data.condition, 'rule', 'enable') || !$ctrl.fieldsAvailable()\"\n                         ng-if=\"!$ctrl.displayOptions.useTextButtons && $ctrl.checkCondition($ctrl.data.condition, 'rule', 'render')\">\n                    add\n                    <md-tooltip>Add {{$ctrl.displayOptions.entityTerms.rule || 'Rule'}}</md-tooltip>\n                </md-icon>\n            </div>\n            <div>\n                <md-button class=\"md-small md-raised add-rule\"\n                           ng-click=\"$ctrl.checkCondition($ctrl.data.condition, 'rule', 'enable') && $ctrl.addRule()\" \n                           ng-disabled=\"!$ctrl.checkCondition($ctrl.data.condition, 'rule', 'enable') || !$ctrl.fieldsAvailable()\"\n                           ng-if=\"$ctrl.displayOptions.useTextButtons && $ctrl.checkCondition($ctrl.data.condition, 'rule', 'render')\">\n                    + {{$ctrl.displayOptions.entityTerms.rule|| 'Rule'}}\n                    <md-tooltip>Add {{$ctrl.displayOptions.entityTerms.rule || 'Rule'}}</md-tooltip>\n                </md-button>\n            </div>\n            <div>\n                <md-icon class=\"add-rule-set\" \n                         ng-click=\"$ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'enable') && $ctrl.addRuleSet()\"\n                         ng-disabled=\"!$ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'enable')\" \n                         ng-if=\"!$ctrl.displayOptions.useTextButtons && $ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'render')\">\n                    add_circle_outline\n                    <md-tooltip>Add {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}</md-tooltip>\n                </md-icon>\n            </div>\n            <div>\n                <md-button class=\"md-small md-raised add-rule-set\" \n                         ng-click=\"$ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'enable') && $ctrl.addRuleSet()\"\n                         ng-disabled=\"!$ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'enable')\" \n                         ng-if=\"$ctrl.displayOptions.useTextButtons && $ctrl.checkCondition($ctrl.data.condition, 'ruleSet', 'render')\">\n                    + {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}\n                    <md-tooltip>Add {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}</md-tooltip>\n                </md-button>\n            </div>\n            <div>\n                <md-icon class=\"remove-rule-set\" \n                         ng-if=\"!$ctrl.isFirst && !$ctrl.displayOptions.useTextButtons\" \n                         ng-click=\"$ctrl.removeRuleSet()\">\n                    remove_circle_outline\n                    <md-tooltip>Remove {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}</md-tooltip>\n                </md-icon>\n            </div>\n            <div>\n                <md-button class=\"md-small md-raised remove-rule-set\"\n                         ng-if=\"!$ctrl.isFirst && $ctrl.displayOptions.useTextButtons\" \n                         ng-click=\"$ctrl.removeRuleSet()\">\n                    X\n                    <md-tooltip>Remove {{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}}</md-tooltip>\n                </md-button>\n            </div>\n        </div>\n    </div>\n    <div class=\"child-rule-container\"\n         ng-class=\"{\n             'rule-connector': $ctrl.data.rules.length > 1 && $ctrl.data.condition !== 'criteria',\n             'container-outline': $ctrl.data.condition !== 'criteria'\n        }\"\n         ng-repeat=\"rule in $ctrl.data.rules\">\n        <div ng-switch=\"rule.type\">\n            <rule ng-switch-when=\"rule\"\n                  allow-empty=\"$ctrl.allowEmptyRules\"\n                  data=\"rule\"\n                  fields=\"$ctrl.fieldsForRules\"\n                  mode=\"{{$ctrl.mode}}\"\n                  on-field-change=\"$ctrl.onFieldChange(newField, oldField)\"\n                  on-remove=\"$ctrl.removeRule(rule)\"\n                  operators=\"$ctrl.operators\"\n                  options=\"$ctrl.displayOptions\"\n                  user-input-names=\"$ctrl.userInputNames\">\n            </rule>\n            <rule-set ng-switch-when=\"ruleSet\"\n                      allow-empty-rules=\"$ctrl.allowEmptyRules\"\n                      condition-options=\"$ctrl.conditionOptions\"\n                      default-child-rule=\"$ctrl.defaultChildRule\"\n                      default-child-rule-set=\"$ctrl.defaultChildRuleSet\"\n                      data=\"rule\"\n                      display-options=\"$ctrl.displayOptions\"\n                      is-first=\"false\"\n                      fields=\"$ctrl.fields\"\n                      initial-condition=\"{{$ctrl.initialCondition}}\"\n                      mix-rules=\"$ctrl.mixRules\"\n                      mode=\"{{$ctrl.mode}}\"\n                      on-remove-rule-set=\"$ctrl.removeRule(rule)\"\n                      operators=\"$ctrl.operators\"\n                      pre-defined-rules=\"$ctrl.preDefinedRules\"\n                      user-input-names=\"$ctrl.userInputNames\"\n                      ng-model=\"rule\"\n                      ng-attr-rule-size=\"{{rule.condition !== 'criteria' ? true : undefined}}\">\n            </rule-set>\n        </div>\n    </div>\n</div>";
 // Exports
 module.exports = code;
 
@@ -356,6 +356,8 @@ function ruleSetController(uuid) {
     vm.addRule = addRule;
     vm.addRuleSet = addRuleSet;
     vm.checkCondition = checkCondition;
+    vm.fieldsAvailable = fieldsAvailable;
+    vm.onFieldChange = onFieldChange;
     vm.removeRule = removeRule;
     vm.removeRuleSet = removeRuleSet;
     vm.savedConditionOptions;
@@ -392,7 +394,7 @@ function ruleSetController(uuid) {
 
         // Remove rules that do not require input if the mode is "entry"
         if (vm.mode === 'entry') {
-            _filterRules();
+            _filterUserInputRules();
         }
 
         localConditionOptions = angular.copy(vm.conditionOptions);
@@ -406,6 +408,16 @@ function ruleSetController(uuid) {
                 localConditionOptions[vm.data.condition]['rule'].enable = false;
                 _applyConditionCheck('ruleSet');
             }
+        }
+
+        if (vm.fields) {
+            // Start out with all fields enabled
+            vm.fields.forEach(function (field) {
+                field.disabled = false;
+            });
+
+            // This array will be passed to each rule within this rule set
+            vm.fieldsForRules = _.cloneDeep(vm.fields);
         }
     }
 
@@ -437,11 +449,42 @@ function ruleSetController(uuid) {
         }
     }
 
+    /**
+     * Indicates if there are fields available for use when applying rules. Rules are only available if they are not disabled.
+     */
+    function fieldsAvailable() {
+        return _.find(vm.fieldsForRules, { disabled: false });
+    }
+
+    /**
+     * Callback passed to rule component and fired when the Field input is changed.
+     * The field denoted by newField will be disabled. The field denoted by oldField will be enabled.
+     * Updates the disabled flag on the use of fields within a single rule set.
+     * 
+     * @param {Object} newField the new selected field
+     * @param {Object} oldField (optional) the previous selected field
+     */
+    function onFieldChange(newField, oldField) {
+        _toggleRuleFieldUse(newField.id, true);
+        if (oldField) {
+            _toggleRuleFieldUse(oldField.id, false);
+        }
+    }
+
+    /**
+     * Callback invoked when a rule is removed from this rule set.
+     * 
+     * @param {Object} rule the rule which was removed.
+     */
     function removeRule(rule) {
         var index = vm.data.rules.findIndex(function (r) {
             return r.id === rule.id;
         });
         vm.data.rules.splice(index, 1);
+
+        if (rule.field) {
+            _toggleRuleFieldUse(rule.field.id, false);
+        }
 
         if (!vm.data.rules.length) {
             localConditionOptions = angular.copy(vm.conditionOptions);
@@ -460,7 +503,7 @@ function ruleSetController(uuid) {
         vm.data.name = vm.selectedFilter.name;
         vm.data.type = vm.selectedFilter.type;
         vm.data.rules = vm.data.rules.concat(angular.copy(vm.selectedFilter.rules));
-        _filterRules();
+        _filterUserInputRules();
     }
 
     /* private functions */
@@ -480,7 +523,7 @@ function ruleSetController(uuid) {
         };
     }
 
-    function _filterRules() {
+    function _filterUserInputRules() {
         var rules = [];
         var names = [];
         vm.data.rules.forEach(function (rule) {
@@ -541,6 +584,17 @@ function ruleSetController(uuid) {
         template.id = id;
         return template;
     }
+
+    /**
+     * Sets the disabled flag on the field identified by fieldId in the array vm.fieldsForRules.
+     * 
+     * @param {number|string} fieldId The field id.
+     * @param {boolean} disabled value of the disabled flag to set.
+     */
+    function _toggleRuleFieldUse(fieldId, disabled) {
+        var field = _.find(vm.fieldsForRules, { id: fieldId });
+        field.disabled = disabled;
+    }
 }
 
 /***/ }),
@@ -553,7 +607,7 @@ function ruleSetController(uuid) {
 /***/ (function(module, exports) {
 
 // Module
-var code = "<div class=\"rule-container\" id=\"{{$ctrl.data.id}}\">\n    <div layout=\"row\" layout-align=\"start center\" ng-if=\"$ctrl.mode === 'build'\">\n        <md-input-container flex=\"15\">\n            <label>Field</label>\n            <input id=\"{{$ctrl.data.id + '_FIELD'}}\" required ng-model=\"$ctrl.selectedField\" ng-if=\"!$ctrl.fields.length\">\n            <md-select id=\"{{$ctrl.data.id + '_FIELD'}}\" ng-if=\"$ctrl.fields.length\"\n                       ng-model=\"$ctrl.selectedField\" required \n                       ng-change=\"$ctrl.selectedFieldChange($ctrl.selectedField)\">\n                <md-option ng-repeat=\"field in $ctrl.fields\" ng-value=\"field\">\n                    {{field.name}}\n                </md-option>\n            </md-select>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <md-input-container flex=\"15\">\n            <label>Operator</label>\n            <md-select ng-model=\"$ctrl.data.operator\" required \n                       ng-change=\"$ctrl.selectedOperatorChange($ctrl.data.operator)\"\n                       id=\"{{$ctrl.data.id + '_OPERATOR'}}\">\n                <md-option id=\"{{'OPERATOR_OPTION_' + operator.value.toUpperCase().replace('-', '_')}}\" \n                           ng-repeat=\"operator in $ctrl.operators\" ng-value=\"operator.value\"\n                           ng-disabled=\"$ctrl.selectedField.options.validOperators && \n                                        $ctrl.selectedField.options.validOperators.indexOf(operator.value) === -1\">\n                    {{operator.display}}\n                </md-option>\n            </md-select>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <div flex=\"30\" ng-if=\"!$ctrl.selectedField\"></div>\n        <md-input-container flex=\"30\" ng-if=\"$ctrl.selectedField && !$ctrl.selectedField.values\">\n            <label>{{$ctrl.valueLabel}}</label>\n            <input ng-required=\"!$ctrl.allowEmpty\" ng-disabled=\"$ctrl.data.isUserInput\" \n                   ng-model=\"$ctrl.data.value\" ng-if=\"$ctrl.selectedField && !$ctrl.selectedField.values\"\n                   id=\"{{$ctrl.data.id + '_VALUE'}}\">\n        </md-input-container>\n        <md-input-container flex=\"30\" class=\"class-type\"\n                            ng-if=\"$ctrl.selectedField && $ctrl.selectedField.values && $ctrl.selectedField.values.length && !$ctrl.selectedField.options.multipleValues\">\n            <label>{{$ctrl.valueLabel}}</label>\n            <md-autocomplete\n                md-input-id=\"{{$ctrl.data.id + '_VALUE'}}\"\n                md-no-cache=\"true\"\n                md-selected-item=\"$ctrl.data.value\"\n                ng-blur=\"$ctrl.valueChanged()\"\n                md-search-text=\"$ctrl.searchValueText\"\n                md-items=\"item in $ctrl.valueSearch($ctrl.searchValueText)\"\n                md-item-text=\"item\"\n                md-min-length=\"0\"\n                md-clear-button=\"false\"\n                placeholder=\"{{$ctrl.data.isUserInput ? '(no value required)' : $ctrl.valueLabel}}\"\n                ng-required=\"!$ctrl.data.isUserInput\"\n                ng-disabled=\"$ctrl.data.isUserInput\">\n                <md-item-template>\n                    <span md-highlight-text=\"$ctrl.searchValueText\" md-highlight-flags=\"i\">{{item}}</span>\n                </md-item-template>\n            </md-autocomplete>\n        </md-input-container>\n        <md-input-container flex=\"30\" \n                            ng-if=\"$ctrl.selectedField && $ctrl.selectedField.options.multipleValues\">\n            <label>{{$ctrl.valueLabel}}</label>\n            <md-select ng-model=\"$ctrl.data.value\" multiple aria-label=\"Select a value\" \n                       placeholder=\"{{$ctrl.data.isUserInput ? '(no value required)' : $ctrl.valueLabel}}\"\n                       ng-required=\"!$ctrl.data.isUserInput\" ng-disabled=\"$ctrl.data.isUserInput\"\n                       id=\"{{$ctrl.data.id + '_VALUE'}}\">\n                <md-option id=\"{{'VALUE_OPTION_' + value.toUpperCase()}}\" ng-value=\"value\" ng-repeat=\"value in $ctrl.selectedField.values\">{{value}}</md-option>\n            </md-select>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <md-input-container flex=\"10\" ng-if=\"$ctrl.allowEmpty\">\n            <md-checkbox ng-model=\"$ctrl.data.isUserInput\" ng-change=\"$ctrl.userInputToggled()\">\n                User Input\n            </md-checkbox>\n        </md-input-container>\n        <md-input-container flex=\"10\" ng-if=\"$ctrl.selectedField.options.allowCaseSensitive\">\n            <md-checkbox ng-model=\"$ctrl.data.caseSensitive\">\n                Case Sensitive\n            </md-checkbox>\n        </md-input-container>\n        <div flex=\"{{$ctrl.selectedField.options.allowCaseSensitive ? 5 : 15}}\"></div>\n        <md-icon class=\"remove-rule\" flex=\"5\" ng-click=\"$ctrl.onRemove()\" ng-if=\"!$ctrl.options.useTextButtons\">\n            remove_circle_outline\n            <md-tooltip>Remove</md-tooltip>\n        </md-icon>\n        <md-button class=\"remove-rule md-small md-raised\" flex=\"5\" ng-click=\"$ctrl.onRemove()\" ng-if=\"$ctrl.options.useTextButtons\">\n            X\n            <md-tooltip>Remove</md-tooltip>\n        </md-button>\n    </div>\n    <div layout=\"row\" layout-align=\"start center\" ng-if=\"$ctrl.mode === 'build' && $ctrl.allowEmpty && $ctrl.data.isUserInput && $ctrl.data.userInput\">\n        <md-input-container flex=\"35\">\n            <label>User Input Name</label>\n            <md-autocomplete\n                required\n                md-no-cache=\"true\"\n                md-selected-item=\"$ctrl.data.userInput.name\"\n                md-search-text=\"$ctrl.userInputNameSearchText\"\n                md-items=\"item in $ctrl.userInputNameSearch($ctrl.userInputNameSearchText)\"\n                md-item-text=\"item\"\n                md-min-length=\"0\"\n                md-clear-button=\"false\"\n                placeholder=\"Choose input (type to create new)\"\n                ng-blur=\"$ctrl.userInputNameUpdated()\">\n                <md-item-template>\n                    <span md-highlight-text=\"$ctrl.userInputNameSearchText\" md-highlight-flags=\"^i\">{{item}}</span>\n                </md-item-template>\n            </md-autocomplete>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <md-input-container flex=\"15\">\n            <label>Filter Type</label>\n            <md-select ng-model=\"$ctrl.data.userInput.filterType\">\n                <md-option value=\"standard\">Standard</md-option>\n                <md-option value=\"other\">Other</md-option>\n            </md-select>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <md-input-container flex=\"10\">\n            <md-checkbox ng-model=\"$ctrl.data.userInput.allowWildcards\">\n                Allow Wilcards\n            </md-checkbox>\n        </md-input-container>\n        <div flex=\"5\"></div>\n    </div>\n    <div layout=\"row\" ng-if=\"$ctrl.mode === 'entry'\">\n        <md-input-container flex=\"60\">\n            <label>{{$ctrl.data.userInput.name}}</label>\n            <textarea ng-model=\"$ctrl.data.value\" rows=\"2\" required></textarea>\n        </md-input-container>\n        <div flex=\"15\"></div>\n        <md-input-container flex=\"20\">\n            <label>Treat as</label>\n            <md-select ng-model=\"$ctrl.data.treatAs\" required>\n                <md-option value=\"literal\">Literal</md-option>\n                <md-option value=\"regex\">Regex</md-option>\n                <md-option value=\"wildcards\" ng-if=\"::$ctrl.data.userInput.allowWildcards\">Allow Wildcards</md-option>\n            </md-select>\n        </md-input-container>\n    </div>\n</div>";
+var code = "<div class=\"rule-container\" id=\"{{$ctrl.data.id}}\">\n    <div layout=\"row\" layout-align=\"start center\" ng-if=\"$ctrl.mode === 'build'\">\n        <md-input-container flex=\"15\">\n            <label>Field</label>\n            <input id=\"{{$ctrl.data.id + '_FIELD'}}\" required ng-model=\"$ctrl.selectedField\" ng-if=\"!$ctrl.fields.length\">\n            <md-select id=\"{{$ctrl.data.id + '_FIELD'}}\" ng-if=\"$ctrl.fields.length\"\n                       ng-model=\"$ctrl.selectedField\" required\n                       ng-change=\"$ctrl.selectedFieldChange($ctrl.selectedField)\">\n                <md-option ng-repeat=\"field in $ctrl.fields\" ng-value=\"field\" ng-disabled=\"field.id !== $ctrl.selectedField.id && field.disabled\">\n                    {{field.name}}\n                </md-option>\n            </md-select>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <md-input-container flex=\"15\">\n            <label>Operator</label>\n            <md-select ng-model=\"$ctrl.data.operator\" required \n                       ng-change=\"$ctrl.selectedOperatorChange($ctrl.data.operator)\"\n                       id=\"{{$ctrl.data.id + '_OPERATOR'}}\">\n                <md-option id=\"{{'OPERATOR_OPTION_' + operator.value.toUpperCase().replace('-', '_')}}\" \n                           ng-repeat=\"operator in $ctrl.operators\" ng-value=\"operator.value\"\n                           ng-disabled=\"$ctrl.selectedField.options.validOperators && \n                                        $ctrl.selectedField.options.validOperators.indexOf(operator.value) === -1\">\n                    {{operator.display}}\n                </md-option>\n            </md-select>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <div flex=\"30\" ng-if=\"!$ctrl.selectedField\"></div>\n        <md-input-container flex=\"30\" ng-if=\"$ctrl.selectedField && !$ctrl.selectedField.values\">\n            <label>{{$ctrl.valueLabel}}</label>\n            <input ng-required=\"!$ctrl.allowEmpty\" ng-disabled=\"$ctrl.data.isUserInput\" \n                   ng-model=\"$ctrl.data.value\" ng-if=\"$ctrl.selectedField && !$ctrl.selectedField.values\"\n                   id=\"{{$ctrl.data.id + '_VALUE'}}\">\n        </md-input-container>\n        <md-input-container flex=\"30\" class=\"class-type\"\n                            ng-if=\"$ctrl.selectedField && $ctrl.selectedField.values && $ctrl.selectedField.values.length && !$ctrl.selectedField.options.multipleValues\">\n            <label>{{$ctrl.valueLabel}}</label>\n            <md-autocomplete\n                md-input-id=\"{{$ctrl.data.id + '_VALUE'}}\"\n                md-no-cache=\"true\"\n                md-selected-item=\"$ctrl.data.value\"\n                ng-blur=\"$ctrl.valueChanged()\"\n                md-search-text=\"$ctrl.searchValueText\"\n                md-items=\"item in $ctrl.valueSearch($ctrl.searchValueText)\"\n                md-item-text=\"item\"\n                md-min-length=\"0\"\n                md-clear-button=\"false\"\n                placeholder=\"{{$ctrl.data.isUserInput ? '(no value required)' : $ctrl.valueLabel}}\"\n                ng-required=\"!$ctrl.data.isUserInput\"\n                ng-disabled=\"$ctrl.data.isUserInput\">\n                <md-item-template>\n                    <span md-highlight-text=\"$ctrl.searchValueText\" md-highlight-flags=\"i\">{{item}}</span>\n                </md-item-template>\n            </md-autocomplete>\n        </md-input-container>\n        <md-input-container flex=\"30\" \n                            ng-if=\"$ctrl.selectedField && $ctrl.selectedField.options.multipleValues\">\n            <label>{{$ctrl.valueLabel}}</label>\n            <md-select ng-model=\"$ctrl.data.value\" multiple aria-label=\"Select a value\" \n                       placeholder=\"{{$ctrl.data.isUserInput ? '(no value required)' : $ctrl.valueLabel}}\"\n                       ng-required=\"!$ctrl.data.isUserInput\" ng-disabled=\"$ctrl.data.isUserInput\"\n                       id=\"{{$ctrl.data.id + '_VALUE'}}\">\n                <md-option id=\"{{'VALUE_OPTION_' + value.toUpperCase()}}\" ng-value=\"value\" ng-repeat=\"value in $ctrl.selectedField.values\">{{value}}</md-option>\n            </md-select>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <md-input-container flex=\"10\" ng-if=\"$ctrl.allowEmpty\">\n            <md-checkbox ng-model=\"$ctrl.data.isUserInput\" ng-change=\"$ctrl.userInputToggled()\">\n                User Input\n            </md-checkbox>\n        </md-input-container>\n        <md-input-container flex=\"10\" ng-if=\"$ctrl.selectedField.options.allowCaseSensitive\">\n            <md-checkbox ng-model=\"$ctrl.data.caseSensitive\">\n                Case Sensitive\n            </md-checkbox>\n        </md-input-container>\n        <div flex=\"{{$ctrl.selectedField.options.allowCaseSensitive ? 5 : 15}}\"></div>\n        <md-icon class=\"remove-rule\" flex=\"5\" ng-click=\"$ctrl.onRemove()\" ng-if=\"!$ctrl.options.useTextButtons\">\n            remove_circle_outline\n            <md-tooltip>Remove</md-tooltip>\n        </md-icon>\n        <md-button class=\"remove-rule md-small md-raised\" flex=\"5\" ng-click=\"$ctrl.onRemove()\" ng-if=\"$ctrl.options.useTextButtons\">\n            X\n            <md-tooltip>Remove</md-tooltip>\n        </md-button>\n    </div>\n    <div layout=\"row\" layout-align=\"start center\" ng-if=\"$ctrl.mode === 'build' && $ctrl.allowEmpty && $ctrl.data.isUserInput && $ctrl.data.userInput\">\n        <md-input-container flex=\"35\">\n            <label>User Input Name</label>\n            <md-autocomplete\n                required\n                md-no-cache=\"true\"\n                md-selected-item=\"$ctrl.data.userInput.name\"\n                md-search-text=\"$ctrl.userInputNameSearchText\"\n                md-items=\"item in $ctrl.userInputNameSearch($ctrl.userInputNameSearchText)\"\n                md-item-text=\"item\"\n                md-min-length=\"0\"\n                md-clear-button=\"false\"\n                placeholder=\"Choose input (type to create new)\"\n                ng-blur=\"$ctrl.userInputNameUpdated()\">\n                <md-item-template>\n                    <span md-highlight-text=\"$ctrl.userInputNameSearchText\" md-highlight-flags=\"^i\">{{item}}</span>\n                </md-item-template>\n            </md-autocomplete>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <md-input-container flex=\"15\">\n            <label>Filter Type</label>\n            <md-select ng-model=\"$ctrl.data.userInput.filterType\">\n                <md-option value=\"standard\">Standard</md-option>\n                <md-option value=\"other\">Other</md-option>\n            </md-select>\n        </md-input-container>\n        <div flex=\"5\"></div>\n        <md-input-container flex=\"10\">\n            <md-checkbox ng-model=\"$ctrl.data.userInput.allowWildcards\">\n                Allow Wilcards\n            </md-checkbox>\n        </md-input-container>\n        <div flex=\"5\"></div>\n    </div>\n    <div layout=\"row\" ng-if=\"$ctrl.mode === 'entry'\">\n        <md-input-container flex=\"60\">\n            <label>{{$ctrl.data.userInput.name}}</label>\n            <textarea ng-model=\"$ctrl.data.value\" rows=\"2\" required></textarea>\n        </md-input-container>\n        <div flex=\"15\"></div>\n        <md-input-container flex=\"20\">\n            <label>Treat as</label>\n            <md-select ng-model=\"$ctrl.data.treatAs\" required>\n                <md-option value=\"literal\">Literal</md-option>\n                <md-option value=\"regex\">Regex</md-option>\n                <md-option value=\"wildcards\" ng-if=\"::$ctrl.data.userInput.allowWildcards\">Allow Wildcards</md-option>\n            </md-select>\n        </md-input-container>\n    </div>\n</div>";
 // Exports
 module.exports = code;
 
@@ -593,6 +647,7 @@ angular.module('queryBuilder.components').component('rule', {
         data: '<?',
         fields: '<',
         mode: '@',
+        onFieldChange: '&',
         onRemove: '&',
         operators: '<?',
         options: '<?',
@@ -633,20 +688,23 @@ function ruleController() {
             value: 'greater-than'
         }];
 
+        var matchedField = void 0;
         if (vm.data.field) {
             // find field in the list of available fields
-            var matchedField = _.find(vm.fields, function (field) {
-                return field.id === vm.data.field.id;
-            });
-            if (matchedField) {
-                vm.selectedField = matchedField;
-            }
+            matchedField = _.find(vm.fields, { id: vm.data.field.id });
         } else if (vm.fields.length) {
-            vm.selectedField = vm.fields[0];
+            // Set selected field to be first enabled one
+            matchedField = _.find(vm.fields, { disabled: false });
+        }
+        vm.selectedField = matchedField;
+        if (vm.selectedField) {
             vm.data.field = {
                 id: vm.selectedField.id,
                 name: vm.selectedField.name
             };
+            if (vm.onFieldChange) {
+                vm.onFieldChange({ newField: vm.selectedField });
+            }
         }
 
         if (!vm.data.operator) {
@@ -674,6 +732,8 @@ function ruleController() {
             vm.data.value = '';
         }
 
+        var oldField = _.find(vm.fields, { id: vm.data.field.id });
+
         // Update the field model
         vm.data.field = {
             id: field.id,
@@ -689,6 +749,10 @@ function ruleController() {
         }
 
         _constructValueLabel(field, vm.data.operator);
+
+        if (vm.onFieldChange) {
+            vm.onFieldChange({ newField: field, oldField: oldField });
+        }
     }
 
     /**
@@ -900,7 +964,7 @@ angular.module('queryBuilder.demo').factory('demoDataService', function () {
         rules: [{
           type: 'rule',
           field: {
-            id: 4,
+            id: 11,
             name: 'Any',
             options: {
               allowCaseSensitive: true
@@ -954,7 +1018,7 @@ angular.module('queryBuilder.demo').factory('demoDataService', function () {
   };
 
   function getData(key) {
-    return DATA[key];
+    return angular.copy(DATA[key]);
   }
 });
 
@@ -1041,7 +1105,7 @@ function demoController($mdDialog, demoDataService, fieldDataService, filterData
   function activate() {
     vm.quickFilterFields = angular.copy(vm.fields);
     vm.quickFilterFields.splice(0, 0, {
-      id: 4,
+      id: vm.quickFilterFields.length + 1,
       name: 'Any',
       options: {
         allowCaseSensitive: true
@@ -1072,6 +1136,8 @@ function demoController($mdDialog, demoDataService, fieldDataService, filterData
   }
 
   function openDialog(ev) {
+    vm.demos.filter = demoDataService.getData('filter');
+
     $mdDialog.show({
       bindToController: true,
       clickOutsideToClose: true,
@@ -1235,8 +1301,50 @@ angular.module('queryBuilder.services').factory('fieldDataService', function () 
             }
         }, {
             id: 3,
+            name: 'Rule',
+            options: {
+                allowCaseSensitive: true
+            }
+        }, {
+            id: 4,
+            name: 'Scope',
+            options: {
+                allowCaseSensitive: true
+            }
+        }, {
+            id: 5,
+            name: 'Security',
+            options: {
+                allowCaseSensitive: true
+            }
+        }, {
+            id: 6,
+            name: 'Service',
+            options: {
+                allowCaseSensitive: true
+            }
+        }, {
+            id: 7,
+            name: 'Tech',
+            options: {
+                allowCaseSensitive: true
+            }
+        }, {
+            id: 8,
             name: 'Type',
             values: [],
+            options: {
+                allowCaseSensitive: true
+            }
+        }, {
+            id: 9,
+            name: 'Universe',
+            options: {
+                allowCaseSensitive: true
+            }
+        }, {
+            id: 10,
+            name: 'Value',
             options: {
                 allowCaseSensitive: true
             }
@@ -1245,7 +1353,7 @@ angular.module('queryBuilder.services').factory('fieldDataService', function () 
         // Populate class and type with some data
         for (var i = 1; i <= 100; i++) {
             filters[1].values.push('Class' + i);
-            filters[2].values.push('Type' + i);
+            filters[7].values.push('Type' + i);
         }
 
         return filters;
@@ -1417,6 +1525,106 @@ angular.module('queryBuilder.services').factory('filterDataService', function ()
 
 /***/ }),
 
+/***/ "./app/services/filter-transformation.service.js":
+/*!*******************************************************!*\
+  !*** ./app/services/filter-transformation.service.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+angular.module('queryBuilder.services').factory('filterTransformationService', function () {
+
+    return {
+        getPredicateTree: getPredicateTree
+    };
+
+    /**
+     * Maps the given filter builder model to a predicate tree.
+     * 
+     * @param {Object} filterBuilderModel The model used by the filter builder component.
+     * @returns {Object} a predicate tree.
+     */
+    function getPredicateTree(filterBuilderModel) {
+        return _mapRuleSet(filterBuilderModel);
+    }
+
+    function _mapRule(rule, criteria) {
+        var criteriaNameByFieldName = {
+            'Class': 'CLASS',
+            'Rule': 'RULE',
+            'Scope': 'SCOPE',
+            'Security': 'SECURITY',
+            'Service': 'SERVICE',
+            'Tech': 'TECH',
+            'Type': 'TYPE',
+            'Universe': 'UNIVERSE',
+            'Value': 'VALUE'
+        };
+        var field = criteriaNameByFieldName[rule.field.name];
+        var values = _mapValues(rule.operator, rule.value);
+        if (criteria[field]) {
+            criteria[field] = criteria[field].concat(values);
+        } else {
+            criteria[field] = values;
+        }
+    }
+
+    function _mapRuleSet(ruleSet) {
+        var criteria = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+
+        var type = ruleSet.rules.length === 1 ? 'MATCH' : ruleSet.condition.toUpperCase();
+        var predicateTree = {
+            type: type,
+            criteria: criteria
+        };
+
+        ruleSet.rules.forEach(function (rule) {
+            switch (rule.type) {
+                case 'rule':
+                    if (rule.field.name === 'Attribution') {
+                        predicateTree.attributions = rule.value;
+                    } else {
+                        _mapRule(rule, criteria);
+                    }
+                    break;
+                case 'ruleSet':
+                    _mapRuleSet(rule, criteria);
+                    break;
+            }
+        });
+
+        return predicateTree;
+    }
+
+    function _mapValues(operator, values) {
+        var vals = Array.isArray(values) ? values : [values];
+        var result = vals.map(function (val) {
+            switch (operator) {
+                case 'contains':
+                    return _.escapeRegExp(val);
+                case 'ends-with':
+                    return _.escapeRegExp(val) + '$';
+                case 'exact-match':
+                    return '^' + _.escapeRegExp(val) + '$';
+                case 'regex':
+                    return '' + val;
+                case 'starts-with':
+                    return '^' + _.escapeRegExp(val);
+                default:
+                    throw new Error('Unknown operator ' + operator);
+            }
+        });
+
+        return result;
+    }
+});
+
+/***/ }),
+
 /***/ "./app/services/rule-data.service.js":
 /*!*******************************************!*\
   !*** ./app/services/rule-data.service.js ***!
@@ -1475,9 +1683,9 @@ angular.module('queryBuilder.services', []);
 /***/ }),
 
 /***/ 0:
-/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** multi ./app/app.js ./app/services/services.module.js ./app/services/field-data.service.js ./app/services/filter-data.service.js ./app/services/rule-data.service.js ./app/components/components.module.js ./app/components/and-or-switch.component.js ./app/components/collapsible-panel.component.js ./app/components/query-builder.component.js ./app/components/rule-set.component.js ./app/components/rule.component.js ./app/directives/directives.module.js ./app/directives/rule-size.directive.js ./app/demo/demo.module.js ./app/demo/demo-options.component.js ./app/demo/demo.controller.js ./app/demo/demo-data.service.js ***!
-  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** multi ./app/app.js ./app/services/services.module.js ./app/services/field-data.service.js ./app/services/filter-data.service.js ./app/services/filter-transformation.service.js ./app/services/rule-data.service.js ./app/components/components.module.js ./app/components/and-or-switch.component.js ./app/components/collapsible-panel.component.js ./app/components/query-builder.component.js ./app/components/rule-set.component.js ./app/components/rule.component.js ./app/directives/directives.module.js ./app/directives/rule-size.directive.js ./app/demo/demo.module.js ./app/demo/demo-options.component.js ./app/demo/demo.controller.js ./app/demo/demo-data.service.js ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1485,6 +1693,7 @@ __webpack_require__(/*! ./app/app.js */"./app/app.js");
 __webpack_require__(/*! ./app/services/services.module.js */"./app/services/services.module.js");
 __webpack_require__(/*! ./app/services/field-data.service.js */"./app/services/field-data.service.js");
 __webpack_require__(/*! ./app/services/filter-data.service.js */"./app/services/filter-data.service.js");
+__webpack_require__(/*! ./app/services/filter-transformation.service.js */"./app/services/filter-transformation.service.js");
 __webpack_require__(/*! ./app/services/rule-data.service.js */"./app/services/rule-data.service.js");
 __webpack_require__(/*! ./app/components/components.module.js */"./app/components/components.module.js");
 __webpack_require__(/*! ./app/components/and-or-switch.component.js */"./app/components/and-or-switch.component.js");
