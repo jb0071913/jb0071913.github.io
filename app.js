@@ -203,7 +203,7 @@ angular.module('queryBuilder.components', []);
 /***/ (function(module, exports) {
 
 // Module
-var code = "<div layout-padding class=\"query-builder\">\n    <form name=\"queryBuilder\">\n        <rule-set allow-empty-rules=\"$ctrl.allowEmptyRules\"\n                condition-options=\"$ctrl.conditionOptions\"\n                default-child-rule=\"$ctrl.childRule\"\n                default-child-rule-set=\"$ctrl.childRuleSet\"\n                data=\"$ctrl.data\"\n                display-options=\"$ctrl.displayOptions\"\n                fields=\"$ctrl.fields\"\n                initial-condition=\"{{$ctrl.initialCondition}}\"\n                is-first=\"true\"\n                mix-rules=\"$ctrl.mixRules\"\n                mode=\"{{$ctrl.mode}}\"\n                operators=\"$ctrl.operators\"\n                pre-defined-rules=\"$ctrl.preDefinedRules\"\n                single-rule-set=\"$ctrl.singleRuleSet\"\n                user-input-names=\"$ctrl.userInputNames\">\n        </rule-set>\n    </form>\n    <div layout=\"row\" layout-align=\"start center\">\n        <div flex=\"10\">Builder form valid?: </div>\n        <md-icon flex=\"20\" ng-class=\"{'valid': queryBuilder.$valid, 'invalid': !queryBuilder.$valid}\">{{queryBuilder.$valid ? 'check_circle' : 'error'}}</md-icon>\n        <div flex=\"70\"></div>\n    </div>\n    <div ng-messages=\"queryBuilder.$error\" style=\"color:maroon\">\n        <div ng-message=\"invalidRuleSize\">{{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}} must have 2 or more children</div>\n        <div ng-message=\"required\">A required field is missing</div>\n    </div>\n    <collapsible-panel ng-if=\"$ctrl.displayOptions.includeModel\"\n                       switch=\"$ctrl.showModel\"\n                       title=\"Model\"\n                       title-size=\"4\">\n    </collapsible-panel>\n    <div ng-if=\"$ctrl.displayOptions.includeModel && $ctrl.showModel\" class=\"model-container\">\n        <pre>{{$ctrl.data|json}}</pre>\n    </div>\n</div>";
+var code = "<div layout-padding class=\"query-builder\">\n    <form name=\"queryBuilder\">\n        <rule-set allow-empty-rules=\"$ctrl.allowEmptyRules\"\n                condition-options=\"$ctrl.conditionOptions\"\n                default-child-rule=\"$ctrl.childRule\"\n                default-child-rule-set=\"$ctrl.childRuleSet\"\n                data=\"$ctrl.data\"\n                display-options=\"$ctrl.displayOptions\"\n                fields=\"$ctrl.fields\"\n                initial-condition=\"{{$ctrl.initialCondition}}\"\n                is-first=\"true\"\n                mix-rules=\"$ctrl.mixRules\"\n                mode=\"{{$ctrl.mode}}\"\n                operators=\"$ctrl.operators\"\n                pre-defined-rules=\"$ctrl.preDefinedRules\"\n                user-input-names=\"$ctrl.userInputNames\">\n        </rule-set>\n    </form>\n    <div layout=\"row\" layout-align=\"start center\">\n        <div flex=\"10\">Builder form valid?: </div>\n        <md-icon flex=\"20\" ng-class=\"{'valid': queryBuilder.$valid, 'invalid': !queryBuilder.$valid}\">{{queryBuilder.$valid ? 'check_circle' : 'error'}}</md-icon>\n        <div flex=\"70\"></div>\n    </div>\n    <div ng-messages=\"queryBuilder.$error\" style=\"color:maroon\">\n        <div ng-message=\"invalidRuleSize\">{{$ctrl.displayOptions.entityTerms.ruleSet || 'Rule Set'}} must have 2 or more children</div>\n        <div ng-message=\"required\">A required field is missing</div>\n    </div>\n    <collapsible-panel ng-if=\"$ctrl.displayOptions.includeModel\"\n                       switch=\"$ctrl.showModel\"\n                       title=\"Model\"\n                       title-size=\"4\">\n    </collapsible-panel>\n    <div ng-if=\"$ctrl.displayOptions.includeModel && $ctrl.showModel\" layout=\"row\">\n        <div layout=\"column\" flex=\"45\">\n            <h5>Builder Model</h5>\n            <div class=\"model-container\">\n                <pre>{{$ctrl.data|json}}</pre>\n            </div>\n        </div>\n        <div flex=\"10\" layout=\"row\" layout-align=\"center start\" class=\"map-button-container\">\n            <md-icon ng-click=\"$ctrl.mapModel()\">\n                forward\n                <md-tooltip>Map to predicate tree model</md-tooltip>\n            </md-icon>\n        </div>\n        <div layout=\"column\" flex=\"45\">\n            <h5>Predicate Tree Model</h5>\n            <div class=\"model-container\">\n                <pre ng-if=\"!$ctrl.predicateTree\">Predicate tree will appear here</pre>\n                <pre ng-if=\"$ctrl.predicateTree\">{{$ctrl.predicateTree|json}}</pre>\n            </div>\n        </div>\n    </div>\n</div>";
 // Exports
 module.exports = code;
 
@@ -224,6 +224,19 @@ module.exports = code;
  * 
  * The bindings are:
  * @param {boolean} allowEmptyRules Indicates if empty rules are allowed. Defaults to false.
+ * @param {Object} childRule The model to initialise a Rule with.
+ * @param {Object} childRuleSet The model to initialise a Rule Set with.
+ * @param {Object} conditionOptions The options for Rule and Rule Set when AND/OR conditions are selected. These determine
+ * if using Rules/Rule Sets is enabled or rendered when a particular condition is selected.
+ * @param {Object} data The underlying model object which is used to build the filter.
+ * @param {Object} displayOptions The options which affect the display of the component. These include using text buttons,
+ * showing the underlying model and which terms to use for the conditions.
+ * @param {Array} fields The fields to use when constructing a Rule.
+ * @param {string} initialCondition The initial condition value - choices are 'AND' or 'OR'.
+ * @param {boolean} mixRules Indicates if the Rule Set can contain both Rules and Rule Sets.
+ * @param {string} mode Which mode the component will be in - choices are 'build' or 'entry'.
+ * @param {Array} operators The operators to use when constructing a Rule.
+ * @param {Array} preDefinedRules The filters to select from. Only applies to 'entry' mode.
  */
 
 angular.module('queryBuilder.components').component('queryBuilder', {
@@ -240,15 +253,15 @@ angular.module('queryBuilder.components').component('queryBuilder', {
         mixRules: '<?',
         mode: '@?',
         operators: '<?',
-        preDefinedRules: '<?',
-        singleRuleSet: '<?'
+        preDefinedRules: '<?'
     },
-    controller: [queryBuilderController]
+    controller: ['filterTransformationService', queryBuilderController]
 });
 
-function queryBuilderController() {
+function queryBuilderController(filterTransformationService) {
     var vm = this;
     vm.$onInit = onInit;
+    vm.mapModel = mapModel;
 
     /**
      * Initialisation of this component.
@@ -290,6 +303,13 @@ function queryBuilderController() {
         vm.mode = vm.mode || 'build';
         vm.showModel = false;
         vm.userInputNames = [];
+    }
+
+    /**
+     * Maps the underlying model (vm.data) to a predicate tree.
+     */
+    function mapModel() {
+        vm.predicateTree = filterTransformationService.getPredicateTree(vm.data);
     }
 }
 
@@ -344,7 +364,6 @@ angular.module('queryBuilder.components').component('ruleSet', {
         onRemoveRuleSet: '&',
         operators: '<?',
         preDefinedRules: '<?',
-        singleRuleSet: '<?',
         userInputNames: '<?'
     },
     controller: ['uuid', ruleSetController]
@@ -1565,22 +1584,25 @@ angular.module('queryBuilder.services').factory('filterTransformationService', f
         };
         var field = criteriaNameByFieldName[rule.field.name];
         var values = _mapValues(rule.operator, rule.value);
-        if (criteria[field]) {
-            criteria[field] = criteria[field].concat(values);
-        } else {
-            criteria[field] = values;
-        }
+        criteria[field] = values;
     }
 
     function _mapRuleSet(ruleSet) {
         var criteria = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 
-        var type = ruleSet.rules.length === 1 ? 'MATCH' : ruleSet.condition.toUpperCase();
-        var predicateTree = {
-            type: type,
-            criteria: criteria
-        };
+        var predicateTree = {};
+
+        var ruleSets = ruleSet.rules.filter(function (rule) {
+            return rule.type === 'ruleSet';
+        });
+        if (ruleSets.length) {
+            predicateTree.type = ruleSet.condition.toUpperCase();
+            predicateTree.children = [];
+        } else {
+            predicateTree.type = 'MATCH';
+            predicateTree.criteria = criteria;
+        }
 
         ruleSet.rules.forEach(function (rule) {
             switch (rule.type) {
@@ -1592,7 +1614,7 @@ angular.module('queryBuilder.services').factory('filterTransformationService', f
                     }
                     break;
                 case 'ruleSet':
-                    _mapRuleSet(rule, criteria);
+                    predicateTree.children.push(_mapRuleSet(rule));
                     break;
             }
         });

@@ -37,6 +37,13 @@ body .md-button.md-small {
 .query-builder md-icon.invalid {
   color: red;
 }
+.query-builder .map-button-container {
+  height: 120px;
+}
+.query-builder .map-button-container md-icon {
+  outline: none;
+  cursor: pointer;
+}
 
 .rule-container md-input-container {
   margin: 10px 0;
